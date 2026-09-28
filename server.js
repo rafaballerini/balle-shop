@@ -27,7 +27,7 @@ const products = [
     description: "Um quebra cabeça de 1000 peças de uma arte do Yoshitomo Nara",
     price: 420,
     category: "Fisico",
-    image: "./images/quebra.jpg.jpg"
+    image: "./images/quebra.jpg"
   },
   {
     id: "luz",
