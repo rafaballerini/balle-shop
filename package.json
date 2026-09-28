@@ -8,6 +8,7 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "dotenv": "^18.0.4",
     "express": "^5.1.0"
   }
 }

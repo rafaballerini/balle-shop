@@ -17,14 +17,18 @@ const money = (cents) =>
   }).format(cents / 100);
 
 async function loadProducts() {
-  const response = await fetch("/api/products");
-  products = await response.json();
-  renderProducts();
-  renderCart();
+  try {
+    const response = await fetch("/api/products");
+    products = await response.json();
+    renderProducts();
+    renderCart();
+  } catch (error) {
+    console.error("Erro ao carregar produtos:", error);
+  }
 }
 
 function renderProducts() {
-  productsEl.innerHTML = products.map((product, index) => `
+  productsEl.innerHTML = products.map((product) => `
     <article class="product">
       <div class="product-art">
         <img src="${product.image}" alt="${product.name}">
@@ -32,7 +36,7 @@ function renderProducts() {
       <h3>${product.name}</h3>
       <p>${product.description}</p>
       <div class="product-bottom">
-        <span class="price">${money(product.price)}</span>
+        <span class="price">${money(product.price * 100)}</span>
         <button class="add-button" onclick="addToCart('${product.id}')">
           Adicionar
         </button>
@@ -73,6 +77,7 @@ function saveCart() {
 }
 
 function renderCart() {
+  // Ignora do carrinho qualquer item que não exista mais na lista oficial de produtos
   const detailedCart = cart.map(item => ({
     ...item,
     product: products.find(product => product.id === item.id)
@@ -85,7 +90,7 @@ function renderCart() {
   );
 
   cartCountEl.textContent = count;
-  cartTotalEl.textContent = money(total);
+  cartTotalEl.textContent = money(total * 100);
   checkoutButton.disabled = detailedCart.length === 0;
 
   if (detailedCart.length === 0) {
@@ -97,19 +102,22 @@ function renderCart() {
     <div class="cart-item">
       <div>
         <strong>${item.product.name}</strong><br>
-        <small>${money(item.product.price)} cada</small>
+        <small>${money(item.product.price * 100)} cada</small>
         <div class="quantity">
           <button onclick="changeQuantity('${item.id}', -1)">−</button>
           <span>${item.quantity}</span>
           <button onclick="changeQuantity('${item.id}', 1)">+</button>
         </div>
       </div>
-      <strong>${money(item.product.price * item.quantity)}</strong>
+      <strong>${money(item.product.price * item.quantity * 100)}</strong>
     </div>
   `).join("");
 }
 
 async function createCheckout() {
+  if (cart.length === 0) return;
+
+  checkoutButton.disabled = true;
   checkoutMessage.textContent = "Criando checkout...";
 
   try {
@@ -125,15 +133,22 @@ async function createCheckout() {
       throw new Error(data.error || "Não foi possível criar o checkout.");
     }
 
-    if (data.demo) {
-      checkoutMessage.textContent =
-        "Modo demonstração: o carrinho chegou ao backend. Agora conectaremos a API real da InfinitePay.";
+    // A InfinitePay pode retornar o link em 'url', 'checkout_url' ou 'link'
+    const redirectUrl = data.url || data.checkout_url || data.link;
+
+    if (redirectUrl) {
+      checkoutMessage.textContent = "Redirecionando para o pagamento...";
+      // Limpa o carrinho ao avançar para o pagamento
+      localStorage.removeItem("balle-cart");
+      window.location.href = redirectUrl;
       return;
     }
 
-    window.location.href = data.url;
+    throw new Error("URL de pagamento não encontrada na resposta.");
   } catch (error) {
+    console.error("Erro no checkout:", error);
     checkoutMessage.textContent = error.message;
+    checkoutButton.disabled = false;
   }
 }
 
