@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Balle Shop — uma lojinha experimental</title>
+  <meta name="description" content="Uma pequena loja experimental criada pela Balle." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="/">BALLE<span>SHOP</span></a>
+    <button id="cartButton" class="cart-button" type="button">
+      Carrinho <span id="cartCount">0</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">UMA LOJINHA EXPERIMENTAL</p>
+        <h1>Pequenas coisas para uma vida mais criativa.</h1>
+        <p class="hero-copy">
+          Um projeto fictício criado para testar uma pergunta:
+          quão simples pode ser colocar um pagamento online para funcionar?
+        </p>
+      </div>
+      <div class="hero-card">
+        <span>projeto</span>
+        <strong>01</strong>
+        <small>e-commerce + checkout</small>
+      </div>
+    </section>
+
+    <section class="products-section">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">A LOJA</p>
+          <h2>Loja de produtos criativos.</h2>
+        </div>
+        <p>Produtos fictícios para o nosso experimento.</p>
+      </div>
+
+      <div id="products" class="product-grid"></div>
+    </section>
+  </main>
+
+  <aside id="cartDrawer" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <p class="eyebrow">SEU PEDIDO</p>
+        <h2>Carrinho</h2>
+      </div>
+      <button id="closeCart" class="icon-button" type="button" aria-label="Fechar carrinho">×</button>
+    </div>
+
+    <div id="cartItems" class="cart-items"></div>
+
+    <div class="cart-footer">
+      <div class="total-row">
+        <span>Total</span>
+        <strong id="cartTotal">R$ 0,00</strong>
+      </div>
+      <button id="checkoutButton" class="checkout-button" type="button">
+        Continuar para pagamento
+      </button>
+      <p id="checkoutMessage" class="checkout-message"></p>
+    </div>
+  </aside>
+
+  <div id="overlay" class="overlay"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
