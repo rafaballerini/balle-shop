@@ -17,7 +17,7 @@ const products = [
     id: "quadro",
     name: "Quadro de Lótus",
     description: "Um quadro pintado pela Balle",
-    price: 210,
+    price: 2,
     category: "Fisico",
     image: "./images/quadro.jpg"
   },
@@ -25,7 +25,7 @@ const products = [
     id: "quebra",
     name: "Quebra Cabeça",
     description: "Um quebra cabeça de 1000 peças de uma arte do Yoshitomo Nara",
-    price: 420,
+    price: 4.2,
     category: "Fisico",
     image: "./images/quebra.jpg"
   },
@@ -33,7 +33,7 @@ const products = [
     id: "luz",
     name: "Luminária Cogumelo",
     description: "Uma luminária de mesa pra decorar a sua sala",
-    price: 990,
+    price: 9,
     category: "Fisico",
     image: "./images/luz.jpg"
   }
