@@ -52,7 +52,6 @@ app.post("/api/create-checkout", async (req, res) => {
       return res.status(400).json({ error: "Carrinho vazio." });
     }
 
-    // Normalização dos itens: a InfinitePay exige o valor em centavos
     const normalizedItems = items
   .map((item) => {
     const product = products.find((p) => p.id === item.id);
@@ -70,12 +69,9 @@ if (normalizedItems.length === 0) {
   return res.status(400).json({ error: "Nenhum produto válido no carrinho." });
 }
 
-    const orderNsu = `ORDER-${Date.now()}`;
-
     // Montagem do payload da API da InfinitePay
     const payload = {
       handle: INFINITEPAY_HANDLE,
-      order_nsu: orderNsu,
       items: normalizedItems,
       ...(customer && { customer })
     };
@@ -111,23 +107,8 @@ if (normalizedItems.length === 0) {
 app.post("/api/webhooks/infinitepay", (req, res) => {
   const notification = req.body;
 
-  /*
-    Exemplo de payload recebido quando o cliente conclui o pagamento:
-    {
-      invoice_slug: "...",
-      amount: 21000,
-      paid_amount: 21000,
-      capture_method: "credit_card" ou "pix",
-      order_nsu: "ORDER-...",
-      transaction_nsu: "..."
-    }
-  */
   console.log("Notificação recebida da InfinitePay:", notification);
 
-  // Aqui você atualizaria o status da compra no seu banco de dados
-  // Ex: marcar pedido como "PAGO" usando notification.order_nsu
-
-  // Sempre responda 200 rapidamente
   res.status(200).send("OK");
 });
 
