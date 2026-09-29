@@ -77,7 +77,6 @@ function saveCart() {
 }
 
 function renderCart() {
-  // Ignora do carrinho qualquer item que não exista mais na lista oficial de produtos
   const detailedCart = cart.map(item => ({
     ...item,
     product: products.find(product => product.id === item.id)
@@ -133,12 +132,10 @@ async function createCheckout() {
       throw new Error(data.error || "Não foi possível criar o checkout.");
     }
 
-    // A InfinitePay pode retornar o link em 'url', 'checkout_url' ou 'link'
     const redirectUrl = data.url || data.checkout_url || data.link;
 
     if (redirectUrl) {
       checkoutMessage.textContent = "Redirecionando para o pagamento...";
-      // Limpa o carrinho ao avançar para o pagamento
       localStorage.removeItem("balle-cart");
       window.location.href = redirectUrl;
       return;

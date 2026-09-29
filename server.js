@@ -3,14 +3,10 @@ const path = require("path");
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;;
+const PORT = 3000;;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
-
-// 1. SUA CONFIGURAÇÃO DA INFINITEPAY
-// Substitua pelo seu usuário cadastrado no app da InfinitePay (sem o '$')
-const INFINITEPAY_HANDLE = process.env.INFINITEPAY_HANDLE;
 
 const products = [
   {
@@ -43,10 +39,9 @@ app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
-// 2. CRIAÇÃO DO LINK DE CHECKOUT (INTEGRAÇÃO REAL)
 app.post("/api/create-checkout", async (req, res) => {
   try {
-    const { items, customer } = req.body;
+    const { items} = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Carrinho vazio." });
@@ -59,7 +54,7 @@ app.post("/api/create-checkout", async (req, res) => {
 
     return {
       quantity: Math.max(1, Number(item.quantity) || 1),
-      price: product.price,
+      price: Math.round(product.price * 100),
       description: product.name
     };
   })
@@ -71,9 +66,8 @@ if (normalizedItems.length === 0) {
 
     // Montagem do payload da API da InfinitePay
     const payload = {
-      handle: INFINITEPAY_HANDLE,
-      items: normalizedItems,
-      ...(customer && { customer })
+      handle: "rafaella-ballerini",
+      items: normalizedItems
     };
 
     // Chamada HTTP para a API da InfinitePay
@@ -97,13 +91,13 @@ if (normalizedItems.length === 0) {
 
     // Retorna os dados com a URL para o frontend redirecionar o cliente
     return res.json(data);
+
   } catch (error) {
     console.error("Erro interno:", error.message);
     return res.status(500).json({ error: error.message });
   }
 });
 
-// 3. ROTA DE WEBHOOK (RECEBE NOTIFICAÇÃO DE PAGAMENTO CONFIRMADO)
 app.post("/api/webhooks/infinitepay", (req, res) => {
   const notification = req.body;
 
